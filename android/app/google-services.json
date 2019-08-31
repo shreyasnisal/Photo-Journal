@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "120260355153",
+    "firebase_url": "https://photo-journal-1e318.firebaseio.com",
+    "project_id": "photo-journal-1e318",
+    "storage_bucket": "photo-journal-1e318.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:120260355153:android:406d79e1df4932fc",
+        "android_client_info": {
+          "package_name": "com.example.photo_journal"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "120260355153-clgdcpkv6i73us3964s1c5hfa5h047fq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyChnKg_nH-_mDxy0GVtblH_6RWnq5PpPd4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "120260355153-clgdcpkv6i73us3964s1c5hfa5h047fq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

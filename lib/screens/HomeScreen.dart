@@ -203,12 +203,12 @@ class _HomeScreenState extends State<HomeScreen> {
               children: <Widget>[
                 Flexible(
                   fit: FlexFit.loose,
-                child: new Text(
-                  caption,
-                  style: Theme.of(context).textTheme.subhead,
-                  textAlign: TextAlign.left
-                ), //Text
-              ),
+                  child: new Text(
+                    caption,
+                    style: Theme.of(context).textTheme.subhead,
+                    textAlign: TextAlign.left
+                  ), //Text
+                ),
                 IconButton(
                   icon: Icon(Icons.delete),
                   // color: Colors.red,

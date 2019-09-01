@@ -5,11 +5,17 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'HomeScreen.dart';
+import '../firebase/Authentication.dart';
 
 class UploadPhotoScreen extends StatefulWidget {
-  State<StatefulWidget> createState() {
-    return _UploadPhotoScreenState();
-  }
+
+  UploadPhotoScreen({
+      this.auth,
+  });
+
+  final AuthImplementation auth;
+
+  State<StatefulWidget> createState() => new _UploadPhotoScreenState();
 }
 
 class _UploadPhotoScreenState extends State<UploadPhotoScreen> {
@@ -29,9 +35,15 @@ class _UploadPhotoScreenState extends State<UploadPhotoScreen> {
 
   final formKey = new GlobalKey<FormState>();
 
+  String currentUser_uid;
+
   @override
   void initState() {
     super.initState();
+
+    widget.auth.getCurrentUser().then((uid) {
+      currentUser_uid = uid;
+    });
 
     selectedDate = formatDate.format(DateTime.now());
     selectedTime = formatTime.format(DateTime.now());
@@ -69,7 +81,7 @@ class _UploadPhotoScreenState extends State<UploadPhotoScreen> {
   void doUploadImage() async {
 
     if (validateAndSave()) {
-      final StorageReference firebaseStorageRef = FirebaseStorage.instance.ref().child("Uploaded Images");
+      final StorageReference firebaseStorageRef = FirebaseStorage.instance.ref().child(currentUser_uid);
       // timeKey = new DateTime.now();
       timeKey = new DateTime(_date.year, _date.month, _date.day, _time.hour, _time.minute).toString();
 
@@ -100,7 +112,7 @@ class _UploadPhotoScreenState extends State<UploadPhotoScreen> {
       "time": selectedTime,
     };
 
-    firebaseDbRef.child("Posts").push().set(data);
+    firebaseDbRef.child(currentUser_uid).push().set(data);
   }
 
   void goToHomeScreen() {

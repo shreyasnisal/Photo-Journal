@@ -6,6 +6,15 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:transparent_image/transparent_image.dart';
 
+class Choice {
+  const Choice({this.title});
+  final String title;
+}
+
+const List<Choice> choices = const <Choice>[
+  const Choice(title: 'Logout'),
+];
+
 class HomeScreen extends StatefulWidget {
 
   HomeScreen({
@@ -17,14 +26,14 @@ class HomeScreen extends StatefulWidget {
   final VoidCallback onSignedOut;
 
   @override
-  State<StatefulWidget> createState() {
-    return _HomeScreenState();
-  }
+  State<StatefulWidget> createState() => new _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
 
   List<Posts> postsList = [];
+
+  String currentUser_uid;
 
   bool _loading = true;
 
@@ -32,7 +41,10 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
 
-    getPosts();
+    widget.auth.getCurrentUser().then((uid) {
+      currentUser_uid = uid.toString();
+      getPosts();
+    });
   }
 
   void getPosts() {
@@ -41,7 +53,7 @@ class _HomeScreenState extends State<HomeScreen> {
       _loading = true;
     });
 
-    DatabaseReference postsRef = FirebaseDatabase.instance.reference().child("Posts");
+    DatabaseReference postsRef = FirebaseDatabase.instance.reference().child(currentUser_uid);
 
     postsList.clear();
 
@@ -97,7 +109,7 @@ class _HomeScreenState extends State<HomeScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) {
-        return new UploadPhotoScreen();
+        return new UploadPhotoScreen(auth: widget.auth);
       }), //MaterialPageRoute
     ).then((value) {
       getPosts();
@@ -109,14 +121,20 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {
       _loading = true;
     });
-    DatabaseReference postRef = FirebaseDatabase.instance.reference().child("Posts").child(key);
+    DatabaseReference postRef = FirebaseDatabase.instance.reference().child(currentUser_uid).child(key);
     postRef.remove().then((value) {
 
-      StorageReference photoStorageRef = FirebaseStorage.instance.ref().child("Uploaded Images").child(imageUrl + ".jpg");
+      StorageReference photoStorageRef = FirebaseStorage.instance.ref().child(currentUser_uid).child(imageUrl + ".jpg");
       photoStorageRef.delete().then((value) {
         getPosts();
       });
     });
+  }
+
+  void popupActionSelect(Choice choice) {
+    if (choice.title == "Logout") {
+      widget.onSignedOut();
+    }
   }
 
   //Design
@@ -125,6 +143,19 @@ class _HomeScreenState extends State<HomeScreen> {
     return new Scaffold(
       appBar: new  AppBar(
         title: new Text("Home"),
+        actions: <Widget>[
+          PopupMenuButton<Choice>(
+              onSelected: popupActionSelect,
+              itemBuilder: (BuildContext context) {
+                return choices.map((Choice choice) {
+                  return PopupMenuItem<Choice>(
+                    value: choice,
+                    child: Text(choice.title),
+                  );
+                }).toList();
+              },
+            )
+        ], //<Widget>
       ), //AppBar
 
       body: _loading ? Center(child: CircularProgressIndicator())

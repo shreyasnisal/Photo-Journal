@@ -205,7 +205,7 @@ class _UploadPhotoScreenState extends State<UploadPhotoScreen> {
 
               child: Text("Upload"),
               textColor: Colors.white,
-              // color: Colors.purple,
+              color: Colors.blue,
 
               onPressed: () {
                 setState(() {

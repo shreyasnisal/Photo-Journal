@@ -142,13 +142,13 @@ class _LoginRegisterState extends State<LoginRegisterPage> {
         new RaisedButton(
           child: new Text("Login", style: new TextStyle(fontSize: 24.0)),
           textColor: Colors.white,
-          // color: Colors.purple,
+          color: Colors.blue,
 
           onPressed: validateAndSubmit,
         ), //RaisedButton
         new FlatButton(
           child: new Text("Create Account", style: new TextStyle(fontSize: 20.0)),
-          // textColor: Colors.purple,
+          textColor: Colors.blue,
 
           onPressed: moveToRegister,
         ), //FlatButton
@@ -159,13 +159,13 @@ class _LoginRegisterState extends State<LoginRegisterPage> {
         new RaisedButton(
           child: new Text("Sign Up", style: new TextStyle(fontSize: 24.0)),
           textColor: Colors.white,
-          // color: Colors.purple,
+          color: Colors.blue,
 
           onPressed: validateAndSubmit,
         ), //RaisedButton
         new FlatButton(
           child: new Text("Already have an account?", style: new TextStyle(fontSize: 20.0)),
-          // textColor: Colors.purple,
+          textColor: Colors.blue,
 
           onPressed: moveToLogin,
         ), //FlatButton

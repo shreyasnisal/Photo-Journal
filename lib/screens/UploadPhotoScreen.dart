@@ -16,10 +16,16 @@ class _UploadPhotoScreenState extends State<UploadPhotoScreen> {
 
   File uploadImage;
   String _caption;
-  var _date, _time;
+  DateTime _date = DateTime.now(), _time = DateTime.now();
   String url;
   bool _loading = true;
   var timeKey;
+
+  var formatDate = new DateFormat('MMM d, yyyy');
+  var formatTime = new DateFormat('hh:mm aa');
+
+  var selectedDate;
+  var selectedTime;
 
   final formKey = new GlobalKey<FormState>();
 
@@ -27,7 +33,11 @@ class _UploadPhotoScreenState extends State<UploadPhotoScreen> {
   void initState() {
     super.initState();
 
+    selectedDate = formatDate.format(DateTime.now());
+    selectedTime = formatTime.format(DateTime.now());
+
     getImage();
+
   }
 
   Future getImage() async {
@@ -58,7 +68,8 @@ class _UploadPhotoScreenState extends State<UploadPhotoScreen> {
 
     if (validateAndSave()) {
       final StorageReference firebaseStorageRef = FirebaseStorage.instance.ref().child("Uploaded Images");
-      timeKey = new DateTime.now();
+      // timeKey = new DateTime.now();
+      timeKey = new DateTime(_date.year, _date.month, _date.day, _time.hour, _time.minute).toString();
 
       final StorageUploadTask uploadTask = firebaseStorageRef.child(timeKey.toString() + ".jpg").putFile(uploadImage);
 
@@ -72,21 +83,19 @@ class _UploadPhotoScreenState extends State<UploadPhotoScreen> {
 
   void saveToDatabase(url) {
     // var dbTimeKey = new DateTime.now();
-    var dbTimeKey = timeKey;
-    var formatDate = new DateFormat('MMM d, yyyy');
-    var formatTime = new DateFormat('EEEE, hh:mm aa');
+    // var dbTimeKey = timeKey;
 
-    String date = formatDate.format(dbTimeKey);
-    String time = formatTime.format(dbTimeKey);
+    // String date = formatDate.format(dbTimeKey);
+    // String time = formatTime.format(dbTimeKey);
 
     DatabaseReference firebaseDbRef = FirebaseDatabase.instance.reference();
 
     var data = {
-      "timestamp": dbTimeKey.toString(),
+      "timestamp": timeKey.toString(),
       "image": url,
       "caption": _caption,
-      "date": date,
-      "time": time,
+      "date": selectedDate,
+      "time": selectedTime,
     };
 
     firebaseDbRef.child("Posts").push().set(data);
@@ -128,9 +137,54 @@ class _UploadPhotoScreenState extends State<UploadPhotoScreen> {
 
         child: ListView(
           children: <Widget>[
+
             Image.file(uploadImage, height: 330.0, width: 660.0),
 
             SizedBox(height:15.0),
+
+            Row(
+              children: <Widget>[
+                Text(selectedDate),
+                IconButton(
+                  icon: Icon(Icons.date_range),
+                  onPressed: () {
+                    showDatePicker(
+                      context: context,
+                      initialDate: DateTime.now(),
+                      firstDate: DateTime(2018),
+                      lastDate: DateTime.now(),
+                      builder: (BuildContext context, Widget child) {
+                        return Theme(
+                          data: ThemeData.light(),
+                          child: child,
+                        ); //Theme
+                      },
+                    ).then((date) {
+                      _date = date;
+                      selectedDate = formatDate.format(date);
+                      setState(() {});
+                    }); //showDatePicker
+                  }
+                ), //IconButton
+
+                Text(selectedTime),
+                IconButton(
+                  icon: Icon(Icons.watch_later),
+                  onPressed: () {
+                    showTimePicker(
+                      initialTime: TimeOfDay.now(),
+                      context: context,
+                    ).then((t) {
+                      _time = DateTime.now().add(Duration(hours: t.hour, minutes: t.minute));
+                      selectedTime = formatTime.format(_time);
+                      setState(() {});
+                    }); //showTimePicker
+                  }
+                ), //IconButton
+              ], //<Widget>
+            ), //Row
+
+            SizedBox(height: 15.0),
 
             TextFormField(
               decoration: new InputDecoration(labelText: 'Caption'),
@@ -144,7 +198,7 @@ class _UploadPhotoScreenState extends State<UploadPhotoScreen> {
               },
             ), //TextFormField
 
-            SizedBox(height:15.0),
+            SizedBox(height: 15.0),
 
             RaisedButton(
               elevation: 10.0,

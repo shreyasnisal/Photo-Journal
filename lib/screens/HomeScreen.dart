@@ -4,6 +4,7 @@ import '../classes/Posts.dart';
 import '../firebase/Authentication.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 class HomeScreen extends StatefulWidget {
 
@@ -42,6 +43,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
     DatabaseReference postsRef = FirebaseDatabase.instance.reference().child("Posts");
 
+    postsList.clear();
+
     postsRef.once().then((DataSnapshot snap) {
 
       if (snap.value == null)
@@ -69,11 +72,25 @@ class _HomeScreenState extends State<HomeScreen> {
           postsList.add(posts);
         }
 
+        sortByTimestamp(postsList);
+
         setState(() {
           _loading = false;
         });
       }
     });
+  }
+
+  void sortByTimestamp(List<Posts> postsList) {
+    for (int i = 0; i < postsList.length; i++) {
+      for (int j = 0; j < postsList.length; j++) {
+        if (postsList[i].timestamp.compareTo(postsList[j].timestamp) > 0) {
+          Posts temp = postsList[i];
+          postsList[i] = postsList[j];
+          postsList[j] = temp;
+        }
+      }
+    }
   }
 
   void goToUploadPhoto() {
@@ -89,11 +106,12 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void deletePost(String key, String imageUrl) {
+    setState(() {
+      _loading = true;
+    });
     DatabaseReference postRef = FirebaseDatabase.instance.reference().child("Posts").child(key);
     postRef.remove().then((value) {
-      setState(() {
-        _loading = true;
-      });
+
       StorageReference photoStorageRef = FirebaseStorage.instance.ref().child("Uploaded Images").child(imageUrl + ".jpg");
       photoStorageRef.delete().then((value) {
         getPosts();
@@ -169,7 +187,14 @@ class _HomeScreenState extends State<HomeScreen> {
 
             SizedBox(height: 10.0),
 
-            new Image.network(image, fit: BoxFit.cover),
+            // new Image.network(image, fit: BoxFit.cover),
+            Center(
+              child: FadeInImage.assetNetwork(
+                placeholder: 'images/placeholder.gif',
+                image: image,
+                fit: BoxFit.cover,
+              ), //FadeInImage
+            ), //Center
 
             SizedBox(height: 10.0),
 
@@ -183,7 +208,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ), //Text
                 IconButton(
                   icon: Icon(Icons.delete),
-                  color: Colors.red,
+                  // color: Colors.red,
                   onPressed: () {
                     deletePost(key, timestamp);
                   },

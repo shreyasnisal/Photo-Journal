@@ -43,6 +43,8 @@ class _UploadPhotoScreenState extends State<UploadPhotoScreen> {
   Future getImage() async {
     var tempImage = await ImagePicker.pickImage(source: ImageSource.gallery);
 
+    if (tempImage == null) Navigator.pop(context);
+
     setState(() {
       uploadImage = tempImage;
     });
@@ -122,6 +124,8 @@ class _UploadPhotoScreenState extends State<UploadPhotoScreen> {
       body: new Center(
         child: _loading
           ? CircularProgressIndicator()
+          : uploadImage == null
+          ? Container()
           : enableUpload(),
       ), //Center
 
@@ -175,7 +179,8 @@ class _UploadPhotoScreenState extends State<UploadPhotoScreen> {
                       initialTime: TimeOfDay.now(),
                       context: context,
                     ).then((t) {
-                      _time = DateTime.now().add(Duration(hours: t.hour, minutes: t.minute));
+                      var now = DateTime.now();
+                      _time = DateTime(now.day, now.month, now.year).add(Duration(hours: t.hour, minutes: t.minute));
                       selectedTime = formatTime.format(_time);
                       setState(() {});
                     }); //showTimePicker

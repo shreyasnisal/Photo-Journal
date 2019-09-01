@@ -201,11 +201,14 @@ class _HomeScreenState extends State<HomeScreen> {
             new Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                new Text(
+                Flexible(
+                  fit: FlexFit.loose,
+                child: new Text(
                   caption,
                   style: Theme.of(context).textTheme.subhead,
-                  textAlign: TextAlign.center
+                  textAlign: TextAlign.left
                 ), //Text
+              ),
                 IconButton(
                   icon: Icon(Icons.delete),
                   // color: Colors.red,

@@ -1,16 +1,20 @@
-# photo_journal
+# Photo Journal
 
-A new Flutter project.
+This repository contains the code the for Photo Journal flutter app, where you can save your photos with the date, time and a caption.
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+### Prerequisites
 
-A few resources to get you started if this is your first Flutter project:
+Before you get started, make sure you have the flutter SDK on your machine, and you need a firebase account. If you don't have one, you can create it [here](https://firebase.google.com/)
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+### Installation
 
-For help getting started with Flutter, view our 
-[online documentation](https://flutter.dev/docs), which offers tutorials, 
-samples, guidance on mobile development, and a full API reference.
+To set up the app, you need to create a new project in firebase and enable authentication using email and password, and the firebase realtime database. Make sure you download the **google-services.json** file, and put it in the **android/app** directory.
+
+### Running the App
+
+Use the command below to generate the APK file for the app, install it on your android device, and you are ready to use the Photo Journal.
+```
+flutter build apk
+```
